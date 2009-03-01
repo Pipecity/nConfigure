@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Precompiled1", "Precompiled1\Precompiled1.csproj", "{5F2CBF10-1D63-41AE-84E9-5E0C324AAB51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Precompiled2", "Precompiled2\Precompiled2.csproj", "{EFC8E875-552E-48BE-8371-72C9C48BBFA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Precompiled3", "Precompiled3\Precompiled3.csproj", "{A662BF9E-D599-4B15-86C6-33ABC52D8CCA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F2CBF10-1D63-41AE-84E9-5E0C324AAB51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F2CBF10-1D63-41AE-84E9-5E0C324AAB51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F2CBF10-1D63-41AE-84E9-5E0C324AAB51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F2CBF10-1D63-41AE-84E9-5E0C324AAB51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFC8E875-552E-48BE-8371-72C9C48BBFA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFC8E875-552E-48BE-8371-72C9C48BBFA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFC8E875-552E-48BE-8371-72C9C48BBFA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFC8E875-552E-48BE-8371-72C9C48BBFA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A662BF9E-D599-4B15-86C6-33ABC52D8CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A662BF9E-D599-4B15-86C6-33ABC52D8CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A662BF9E-D599-4B15-86C6-33ABC52D8CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A662BF9E-D599-4B15-86C6-33ABC52D8CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

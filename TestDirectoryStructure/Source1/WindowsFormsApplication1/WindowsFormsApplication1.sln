@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApplication1", "WindowsFormsApplication1\WindowsFormsApplication1.csproj", "{37D1121D-9843-4D20-A3B9-055EF298D318}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{915417B7-B732-4872-91D2-19E34D6F687D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsService1", "WindowsService1\WindowsService1.csproj", "{0B4EE70F-1941-47AD-877A-568AEAAFF626}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{37D1121D-9843-4D20-A3B9-055EF298D318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37D1121D-9843-4D20-A3B9-055EF298D318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37D1121D-9843-4D20-A3B9-055EF298D318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37D1121D-9843-4D20-A3B9-055EF298D318}.Release|Any CPU.Build.0 = Release|Any CPU
+		{915417B7-B732-4872-91D2-19E34D6F687D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{915417B7-B732-4872-91D2-19E34D6F687D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{915417B7-B732-4872-91D2-19E34D6F687D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{915417B7-B732-4872-91D2-19E34D6F687D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B4EE70F-1941-47AD-877A-568AEAAFF626}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B4EE70F-1941-47AD-877A-568AEAAFF626}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B4EE70F-1941-47AD-877A-568AEAAFF626}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B4EE70F-1941-47AD-877A-568AEAAFF626}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

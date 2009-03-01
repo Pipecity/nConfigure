@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="BuildAll" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="nConfigureTask.nConfigure" AssemblyFile="..\nConfigureTask\bin\Debug\nConfigureTask.dll"/>
+  
+  <PropertyGroup Condition="'$(Configuration)'==''">
+    <Configuration>Debug</Configuration>
+    <Platform>AnyCpu</Platform>
+  </PropertyGroup>
+  
+  <Import Project="generated.xml"  Condition=""/>
+
+  <Target Name="BuildAll">
+    <CallTarget Targets="@(Targets)" ContinueOnError="true"  />
+    <Message Text="@(TargetOutputs)"/>
+  </Target>  
+</Project>
