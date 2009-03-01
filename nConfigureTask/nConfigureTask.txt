@@ -1,0 +1,44 @@
+nConfigureTask is a msBuild task that based on your .net project files generates a new msbuild script with correct dependecies between the projects. To use nConfigureTask in your build script you have to include the task. This is done by
+
+<UsingTask TaskName="nConfigureTask.nConfigure" AssemblyFile="..\nConfigureTask\nConfigureTask.dll"/>
+
+With the correct search path to the binaries.
+
+An example of usage of the task is:
+
+ <Target Name="build">
+    <nConfigure 
+      SourcePaths="TestDirectoryStructure\Source1;TestDirectoryStructure\Source2" 
+      IgnoreSourcePaths="TestDirectoryStructure\IgnoreSource"
+      DllPaths="TestDirectoryStructure\Precompiled;R:\" 
+
+      ResolveForConfiguration="Debug"
+      Output="generated.xml"/>
+  </Target>
+
+SourcePaths and IgnoreSourcePaths:
+This will for csproj files in TestDirectoryStructure\Source1 and TestDirectoryStructure\Source2 relative to the build script but will ignore all project files in TestDirectoryStructure\IgnoreSource
+
+DllPaths:
+If you have project that already are compiled you should add the directories where there binaries are stored.
+
+ResolvedForConfiguration:
+Debug or Release.
+
+Output:
+nConfigure will create a file with this filename that you could include in your next target.
+
+
+
+To use the generated file you have to import it
+
+<Import Project="generated.xml"  Condition=""/>
+
+The file will have all your projects stored in @(Targets) so to build all you could enter:
+
+<Target Name="BuildAll">
+  <CallTarget Targets="@(Targets)" ContinueOnError="true"  />
+  <Message Text="@(TargetOutputs)"/>
+</Target>  
+
+but it is also possible to filter @(Targets) on name and other properties with some more msbuild knowledge.
