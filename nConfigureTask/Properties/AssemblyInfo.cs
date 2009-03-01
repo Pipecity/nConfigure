@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("nConfigureTask")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("released under GPL 3.0")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("nconfigure@gmail.com")]
 [assembly: AssemblyProduct("nConfigureTask")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyCopyright("Copyright ©  2008,2009 Magnus Berglund")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

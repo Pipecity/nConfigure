@@ -4,9 +4,9 @@
 
   <Target Name="build">
     <nConfigure 
-      SourcePaths="..\TestDirectoryStructure\Source1;..\TestDirectoryStructure\Source2" 
-      IgnoreSourcePaths="..\TestDirectoryStructure\IgnoreSource"
-      DllPaths="..\TestDirectoryStructure\Precompiled;R:\" 
+      SourcePaths="TestDirectoryStructure\Source1;TestDirectoryStructure\Source2" 
+      IgnoreSourcePaths="TestDirectoryStructure\IgnoreSource"
+      DllPaths="TestDirectoryStructure\Precompiled;R:\" 
 
       ResolveForConfiguration="Debug"
       Output="generated.xml"/>

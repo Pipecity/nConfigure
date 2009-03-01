@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RefChecker")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("nConfigureLib")]
+[assembly: AssemblyDescription("released under glp 3.0")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RefChecker")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyCompany("nconfigure@gmail.com")]
+[assembly: AssemblyProduct("nConfigureLib")]
+[assembly: AssemblyCopyright("Copyright ©  2008,2009 Magnus Berglund")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

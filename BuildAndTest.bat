@@ -28,7 +28,7 @@ echo Testing if the nConfigure is able to generate an output file based on the t
 
 echo setting up testdirectories:
 subst R: /D 
-subst R: TestDirectoryStructure\PrecompiledSubstToR
+subst R: nConfigureTaskTest\TestDirectoryStructure\PrecompiledSubstToR
 
 pause
 msbuild nConfigureTaskTest\generate.xml
