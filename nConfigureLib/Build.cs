@@ -31,14 +31,29 @@ namespace nConfigureLib
 
         static Logger log = new Logger(typeof(Build));
         public readonly List<string> SourcePaths = new List<string>();
-        public readonly List<string> IgnoreSourcePaths = new List<string>();
         public readonly List<string> PreCompiledDllPaths = new List<string>();
         public int Errors { get; private set; }
 
         private List<CsProject> _projects;
         private List<FailedCsProject> _failCsProjects;
         private List<string> _staticDlls;
+
+        private List<string> _ignoreSourcePaths = new List<string>();
         
+        public ReadOnlyCollection<string> IgnoreSourcePaths
+        {
+            get { return _ignoreSourcePaths.AsReadOnly(); }
+        }
+        
+        public void AddIgnoreSourcePaths(string[] paths)
+        {
+            foreach (var path in paths)
+            {
+                _ignoreSourcePaths.Add(path.ToLower());
+            }
+        }
+
+
         public ReadOnlyCollection<CsProject> Projects
         {
             get { return _projects.AsReadOnly(); }
@@ -161,7 +176,14 @@ namespace nConfigureLib
 		/// <param name="sDir"></param>
 		private List<string> CsProjSearch(string sDir)
 		{
-            if (IgnoreSourcePaths.Contains(sDir.ToLower()))
+            // Skip hidden(doted) files to support clearcase
+            if (sDir.ToLower().StartsWith("."))
+            {
+                log.Info("Ignoring path ( . = hidden )" + sDir);
+                return new List<string>();
+            }
+
+		    if (_ignoreSourcePaths.Contains(sDir.ToLower()))
             {
                 log.Info("Ignoring path " +sDir);
                 return new List<string>();

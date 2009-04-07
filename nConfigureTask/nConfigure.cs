@@ -60,13 +60,14 @@ namespace nConfigureTask
 
                 var build = new Build();
                 build.SourcePaths.AddRange(Split(SourcePaths));
-                build.IgnoreSourcePaths.AddRange(Split(IgnoreSourcePaths));
+                build.AddIgnoreSourcePaths(Split(IgnoreSourcePaths));
                 build.PreCompiledDllPaths.AddRange(Split(DllPaths));
                 build.Scan();
                 if (IsDebugConfiguration(ResolveForConfiguration))
                     build.ResolveForDebugConfiguration();
                 else
                     build.ResolveForReleaseConfiguration();
+
                 build.WriteMSBuilFile(Output);
 
                 BuildEngine.LogMessageEvent(new BuildMessageEventArgs(
