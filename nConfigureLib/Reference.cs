@@ -61,7 +61,7 @@ namespace nConfigureLib
 		/// If we have resolved the reference this points to the project that
         /// builds the dependet file/project.
 		/// </summary>
-		public CsProject CsProject{get; internal set;}
+		public Project Project{get; internal set;}
 
         public bool IsResolved
         {
@@ -69,7 +69,7 @@ namespace nConfigureLib
             {
                 if (IsPreCompiled)
                     return true;
-                if (CsProject == null)
+                if (Project == null)
                     return false;
                 return true;
             }

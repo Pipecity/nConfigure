@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C0E39AB9-6166-4C78-BE2E-046EE0858058}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -48,6 +48,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -59,12 +60,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FailedCsProject.cs" />
+    <Compile Include="Collections\ConfigurationType.cs" />
+    <Compile Include="Collections\ProjectType.cs" />
+    <Compile Include="Project.cs" />
+    <Compile Include="ProjectReader.cs" />
+    <Compile Include="FailedProject.cs" />
     <Compile Include="GPLText.cs" />
+    <Compile Include="Collections\LanguageType.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MsbuildBuilder.cs" />
-    <Compile Include="CsProject.cs" />
-    <Compile Include="CsProjectReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -86,7 +90,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Reference.cs" />
-    <Compile Include="CsProjectReferenceResolver.cs" />
+    <Compile Include="ProjectReferenceResolver.cs" />
     <Compile Include="Build.cs" />
   </ItemGroup>
   <ItemGroup>

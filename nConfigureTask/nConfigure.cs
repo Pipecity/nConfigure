@@ -37,6 +37,8 @@ namespace nConfigureTask
         public string IgnoreSourcePaths { get; set; }
         /// <summary> Will look for precompiled dll in these paths</summary>
         public string DllPaths { get; set; }
+        /// <summary> Will look for precompiled dll in these paths</summary>
+        public string Language { get; set; }
         /// <summary>The file to where the task generate the msbuild script</summary>
         [Required]
         public string Output { get; set; }
@@ -62,13 +64,14 @@ namespace nConfigureTask
                 build.SourcePaths.AddRange(Split(SourcePaths));
                 build.AddIgnoreSourcePaths(Split(IgnoreSourcePaths));
                 build.PreCompiledDllPaths.AddRange(Split(DllPaths));
+                build.SetLanguageType(Language);
                 build.Scan();
                 if (IsDebugConfiguration(ResolveForConfiguration))
                     build.ResolveForDebugConfiguration();
                 else
                     build.ResolveForReleaseConfiguration();
 
-                build.WriteMSBuilFile(Output);
+                build.WriteMSBuildFile(Output);
 
                 BuildEngine.LogMessageEvent(new BuildMessageEventArgs(
                     "Succeded to generate " + Output,

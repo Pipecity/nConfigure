@@ -20,23 +20,32 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Collections.ObjectModel;
+using Microsoft.Build.Framework;
 
 namespace nConfigureLib
 {
-	
+
     public class Build
 	{
-        public string Status { get; private set; }
-        public readonly Dictionary<Guid, List<CsProject>> DuplicateGuidProject;
+        public string Status
+        {
+            get { return string.Empty; }
+            private set
+            {
+                    log.Debug(value);
+            }
+        }
+        public readonly Dictionary<Guid, List<Project>> DuplicateGuidProject;
 
         static Logger log = new Logger(typeof(Build));
         public readonly List<string> SourcePaths = new List<string>();
         public readonly List<string> PreCompiledDllPaths = new List<string>();
         public int Errors { get; private set; }
 
-        private List<CsProject> _projects;
-        private List<FailedCsProject> _failCsProjects;
+        private List<Project> _projects;
+        private List<FailedProject> _failProjects;
         private List<string> _staticDlls;
+        private LanguageType _language = LanguageType.CS;
 
         private List<string> _ignoreSourcePaths = new List<string>();
         
@@ -49,19 +58,30 @@ namespace nConfigureLib
         {
             foreach (var path in paths)
             {
-                _ignoreSourcePaths.Add(path.ToLower());
+                var absolutePath = Path.GetFullPath(path);
+                log.Debug("absolute=" + absolutePath.ToLower());
+                _ignoreSourcePaths.Add(absolutePath.ToLower());
             }
         }
 
+        public void SetLanguageType(string language)
+        {
+            if (language == null)
+                return;
+            if (language.ToLower() == "vb")
+                _language = LanguageType.VB;
+            else
+                _language = LanguageType.CS;
+        }
 
-        public ReadOnlyCollection<CsProject> Projects
+        public ReadOnlyCollection<Project> Projects
         {
             get { return _projects.AsReadOnly(); }
         }
 
-        public ReadOnlyCollection<FailedCsProject> FailedProjects
+        public ReadOnlyCollection<FailedProject> FailedProjects
         {
-            get { return _failCsProjects.AsReadOnly(); }
+            get { return _failProjects.AsReadOnly(); }
         }
 
         public ReadOnlyCollection<string> StaticDlls
@@ -71,32 +91,32 @@ namespace nConfigureLib
 
         public Build()
 		{
-            _projects = new List<CsProject>();
-            _failCsProjects = new List<FailedCsProject>();
+            _projects = new List<Project>();
+            _failProjects = new List<FailedProject>();
             _staticDlls = new List<string>();
-            DuplicateGuidProject = new Dictionary<Guid, List<CsProject>>();
+            DuplicateGuidProject = new Dictionary<Guid, List<Project>>();
 		}
 
         public void ResolveForDebugConfiguration()
         {
-            CsProjectReferenceResolver.Resolve(
+            ProjectReferenceResolver.Resolve(
                 _projects, 
                 _staticDlls, 
-                CsProjectReferenceResolver.Configuration.Debug);
+                ConfigurationType.Debug);
         }
 
         public void ResolveForReleaseConfiguration()
         {
-            CsProjectReferenceResolver.Resolve(
+            ProjectReferenceResolver.Resolve(
                 _projects, 
                 _staticDlls,
-                CsProjectReferenceResolver.Configuration.Debug);
+                ConfigurationType.Debug);
         }
 
         public void Scan()
         {
             _projects.Clear();
-            _failCsProjects.Clear();
+            _failProjects.Clear();
             _staticDlls.Clear();
             DuplicateGuidProject.Clear();
 
@@ -104,26 +124,28 @@ namespace nConfigureLib
             //scan all directories for csproj files
             foreach (string sourcePath in SourcePaths)
             {
-                projectPaths.AddRange(CsProjSearch(sourcePath));
+                var absolutePath = Path.GetFullPath(sourcePath);
+                projectPaths.AddRange(ProjSearch(absolutePath));
             }
             //Scan directories for dlls
             foreach (string precompiledDllPath in PreCompiledDllPaths)
             {
-                DllSearch(precompiledDllPath, _staticDlls);
+                var absolutePath = Path.GetFullPath(precompiledDllPath);
+                DllSearch(absolutePath, _staticDlls);
             }
 
             foreach (var projectPath in projectPaths)
             {
-                CsProject aCsProject;
+                Project aProject;
                 try
                 {
-                    aCsProject = CsProjectReader.ReadProject(projectPath);
-                    _projects.Add(aCsProject);
+                    aProject = ProjectReader.ReadProject(projectPath);
+                    _projects.Add(aProject);
                 }
                 catch (Exception e) 
                 {
                     log.Error(e.Message);
-                    _failCsProjects.Add(new FailedCsProject(projectPath,e.Message));
+                    _failProjects.Add(new FailedProject(projectPath,e.Message));
                 }
             }
 
@@ -132,11 +154,11 @@ namespace nConfigureLib
 
         private void CheckForDuplicateProjectGuid()
         {
-            var tmp = new Dictionary<Guid, List<CsProject>>();
+            var tmp = new Dictionary<Guid, List<Project>>();
             foreach (var project in _projects)
             {
                 if (!tmp.ContainsKey(project.Guid))
-                    tmp.Add(project.Guid, new List<CsProject>());
+                    tmp.Add(project.Guid, new List<Project>());
                 tmp[project.Guid].Add(project);
             }
 
@@ -148,12 +170,81 @@ namespace nConfigureLib
             }
         }
 
-        public void WriteMSBuilFile(string outputFilePath)
+        /// <summary>
+        /// Recursive search for all csproj files and add them to projects
+        /// </summary>
+        /// <param name="sDir"></param>
+        private List<string> ProjSearch(string sDir)
+        {
+            // Skip hidden(doted) files to support clearcase
+            if (Path.GetFileName(sDir).ToLower().StartsWith("."))
+            {
+                log.Info("Ignoring path ( . = hidden )" + sDir);
+                return new List<string>();
+            }
+
+            if (_ignoreSourcePaths.Contains(sDir.ToLower()))
+            {
+                log.Info("Ignoring path " + sDir);
+                return new List<string>();
+            }
+
+            var projectsPath = new List<string>();
+            if (String.IsNullOrEmpty(sDir))
+                return new List<string>();
+            try
+            {
+                var searchPattern = GetSearchPatternByLanguage();
+                Status = "Searching for project files in " + sDir;
+                foreach (string projectPath in Directory.GetFiles(sDir, searchPattern))
+                {
+                    string projectName = Path.GetFileNameWithoutExtension(projectPath);
+                    if (projectName.StartsWith("~"))
+                        continue;
+
+                    string absolutProjectPath = Path.GetFullPath(projectPath);
+                    projectsPath.Add(absolutProjectPath);
+                }
+
+                foreach (string subDirectory in Directory.GetDirectories(sDir))
+                {
+                    log.Debug("Dir=" + subDirectory);
+                    projectsPath.AddRange(ProjSearch(subDirectory));
+                }
+
+                return projectsPath;
+            }
+            catch (System.Exception excpt)
+            {
+                log.Error(excpt.Message);
+                throw excpt;
+            }
+        }
+
+        private static string TryConvertToAbsolutPath(string csProjectPath, string path)
+        {
+            if (!Path.IsPathRooted(path))
+            {
+                //this is a relative path. convert it to absolut path so we could compare it easier
+                path = Path.GetFullPath(Path.Combine(csProjectPath, path));
+            }
+            return path;
+        }
+
+
+        private string GetSearchPatternByLanguage()
+        {
+            if (_language == LanguageType.VB)
+                return "*.vbproj";
+            return "*.csproj";
+        }
+
+        public void WriteMSBuildFile(string outputFilePath)
         {
             WriteMsBuildFile(_projects, outputFilePath);
         }
 
-        private void WriteMsBuildFile(List<CsProject> projects, string filename)
+        private void WriteMsBuildFile(List<Project> projects, string filename)
 		{
             Status = "Writing MsBuild file : " + filename;
             MsbuildBuilder target = new MsbuildBuilder();
@@ -168,55 +259,6 @@ namespace nConfigureLib
 			target.CreateBuildFile(projects, w);
 			w.Flush();
 			w.Close();
-		}
-
-		/// <summary>
-		/// Recursive search for all csproj files and add them to projects
-		/// </summary>
-		/// <param name="sDir"></param>
-		private List<string> CsProjSearch(string sDir)
-		{
-            // Skip hidden(doted) files to support clearcase
-            if (sDir.ToLower().StartsWith("."))
-            {
-                log.Info("Ignoring path ( . = hidden )" + sDir);
-                return new List<string>();
-            }
-
-		    if (_ignoreSourcePaths.Contains(sDir.ToLower()))
-            {
-                log.Info("Ignoring path " +sDir);
-                return new List<string>();
-            }
-
-            var projectsPath = new List<string>();
-            if(String.IsNullOrEmpty(sDir))
-                return new List<string>();
-			try
-			{
-                Status = "Searching for project files in " + sDir;
-                foreach (string projectPath in Directory.GetFiles(sDir, "*.csproj"))
-				{
-                    string projectName = Path.GetFileNameWithoutExtension(projectPath);
-					if (projectName.StartsWith("~"))
-					    continue;
-                    
-                    string absolutProjectPath = Path.GetFullPath(projectPath);
-                    projectsPath.Add(absolutProjectPath);
-				}
-				
-				foreach (string subDirectory in Directory.GetDirectories(sDir))
-				{
-                    projectsPath.AddRange(CsProjSearch(subDirectory));
-				}
-
-                return projectsPath;
-			}
-			catch (System.Exception excpt)
-			{
-				log.Error(excpt.Message);
-				throw excpt;
-			}
 		}
 
 		/// <summary>
@@ -243,6 +285,7 @@ namespace nConfigureLib
 					}
 					else
 					{
+                        log.Debug("Dll=" + absolutFilePath);
                         dlls.Add(absolutFilePath);
 					}
 
